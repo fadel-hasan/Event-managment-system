@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\API\Auth;
 
+use App\Http\Controllers\Controller;
 use App\Mail\PasswordResetMail;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
@@ -9,9 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Request as r;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
@@ -115,13 +114,12 @@ class AuthController extends Controller
                     'message' => 'معلومات تسجيل دخول خاطئة حاول مرة اخر',
                 ], 404);
             }
-//            if ($user->is_blocked) {
-//                return response()->json([
-//                    'status' => false,
-//                    'message' => 'الحساب محظور',
-//                    'errors' => 'الحساب محظور'
-//                ], 401);
-//            }
+            if ($user->status == 'disable' || $user->status == 'blocked') {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'الحساب محذوف او محظور يرجى مراجعتنا',
+                ], 401);
+            }
 
 
 

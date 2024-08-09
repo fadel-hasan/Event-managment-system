@@ -2,7 +2,7 @@
 	"info": {
 		"_postman_id": "48c0597b-28dd-4c93-a371-62ed2303a55b",
 		"name": "EMS Collections",
-		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "31814385"
 	},
 	"item": [
@@ -35,7 +35,21 @@
 								}
 							}
 						},
-						"url": "http://127.0.0.1:8000/api/register"
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/register",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"register"
+							]
+						}
 					},
 					"response": []
 				},
@@ -65,7 +79,21 @@
 								}
 							}
 						},
-						"url": "http://127.0.0.1:8000/api/login"
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/login",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"login"
+							]
+						}
 					},
 					"response": []
 				},
@@ -74,13 +102,31 @@
 					"request": {
 						"auth": {
 							"type": "bearer",
-							"bearer": {
-								"token": "{{token}}"
-							}
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
 						},
 						"method": "POST",
 						"header": [],
-						"url": "http://127.0.0.1:8000/api/logout"
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/logout",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"logout"
+							]
+						}
 					},
 					"response": []
 				}
@@ -103,7 +149,22 @@
 								}
 							}
 						},
-						"url": "http://127.0.0.1:8000/api/password/email"
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/password/email",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"password",
+								"email"
+							]
+						}
 					},
 					"response": []
 				},
@@ -121,7 +182,23 @@
 								}
 							}
 						},
-						"url": "http://127.0.0.1:8000/api/password/code/check"
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/password/code/check",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"password",
+								"code",
+								"check"
+							]
+						}
 					},
 					"response": []
 				},
@@ -139,12 +216,66 @@
 								}
 							}
 						},
-						"url": "http://127.0.0.1:8000/api/password/reset"
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/password/reset",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"password",
+								"reset"
+							]
+						}
 					},
 					"response": []
 				}
 			],
 			"description": "نسيان كلمة السر بحال تم نسيان كلمة السر قبل تسجيل بيتم عمل اول شيء نسيان ويلي هو اول api بدخل ايميل مشان تجيه رسالة بكود يأدخله تاني خطوة لازم يتم تحويله مباشرة لصفحة ادخال الكود بس لتجيه الرسال بأدخله وبتم استدعاء ال api التاني للتحقق من صلاحية الكود اذا كان صلاح بيرجع الريسبونس انو صالح مشان يتم اخده على الصفحة يلي بعدها وبحال ما صالح بيطلع رسالى انة غلط بعدين اذا صالح بتم اخذه عالصفحة مع الاحتفظ بالكود ليتم ارساله في الخلفية الى ال api التالت طبعا مع حقل كلمة السر الجديدة وهيك بتم التغيير"
+		},
+		{
+			"name": "delete",
+			"item": [
+				{
+					"name": "delete",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/account/delete",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"account",
+								"delete"
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		}
 	],
 	"variable": [
