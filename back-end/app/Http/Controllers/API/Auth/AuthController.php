@@ -13,7 +13,6 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
-
 class AuthController extends Controller
 {
     public function register(Request $request): JsonResponse
@@ -22,10 +21,12 @@ class AuthController extends Controller
             //Validated
 
             $ValidateRules = [
-                'name' => 'required|min:2|max:100',
+                'name' => 'required|min:3|max:100',
                 'username' => 'required|min:6|max:20|unique:users,username|regex:/^[A-Za-z0-9]{6,}$/i',
                 'email' => 'required|email|unique:users,email',
                 'password' => 'required|min:8|max:255',
+                'number'=>'required|numeric',
+                'address'=>'required'
             ];
             $ValidatorErrors = [
                 'name.required' => 'الاسم مطلوب',
@@ -42,6 +43,8 @@ class AuthController extends Controller
                 'password.required' => 'كلمة السر مطلوبة',
                 'password.min' => 'كلمة السر قصيرة جدا',
                 'password.max' => 'كلمة السر طويلة جدا',
+                'number.required'=>'الرقم مطلوب ادخاله',
+                'address.required'=>'العنوان مطلوب'
             ];
             $validatedData = Validator::make($request->all(), $ValidateRules, $ValidatorErrors);
 
@@ -66,6 +69,8 @@ class AuthController extends Controller
             $date['email'] = $request->email;
             $date['password'] = $HashedPassword;
             $date['username'] = $request->username;
+            $date['number'] = $request->number;
+            $date['address'] = $request->address;
             $user = User::create($date);
 
             $user->assignRole('user');

@@ -30,6 +30,8 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::middleware('auth:sanctum')->group(function (){
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::post('account/delete',[UserController::class,'delete_account']);
+    Route::get('account/profile',[UserController::class,'show']);
+    Route::put('account/edit',[UserController::class,'update']);
 });
 
 

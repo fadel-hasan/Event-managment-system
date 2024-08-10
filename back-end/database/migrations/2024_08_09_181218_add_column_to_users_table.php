@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->enum('status',['enable','blocked','disable']);
+            $table->string('number');
+            $table->string('address');
         });
     }
 
@@ -22,7 +24,9 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            //
+            $table->dropColumn('status');
+            $table->dropColumn('number');
+            $table->dropColumn('address');
         });
     }
 };

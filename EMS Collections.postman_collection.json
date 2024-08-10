@@ -28,7 +28,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\":\"fadl\",\n    \"username\":\"fadlhas\",\n    \"email\":\"example@gmail.com\",\n    \"password\":\"12345667\"\n}",
+							"raw": "{\n    \"name\":\"fadl\",\n    \"username\":\"fadlhas\",\n    \"email\":\"example@gmail.com\",\n    \"number\":\"+963962732401\",\n    \"address\":\"syria-damascus\",\n    \"password\":\"12345667\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -72,7 +72,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"login\":\"fadlhas\",//email or username => login:example@gmail.com\n    \"password\":\"12345678\"\n}",
+							"raw": "{\n    \"login\":\"fadlhas\",//email or username => login:example@gmail.com\n    \"password\":\"12345667\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -239,8 +239,85 @@
 			"description": "نسيان كلمة السر بحال تم نسيان كلمة السر قبل تسجيل بيتم عمل اول شيء نسيان ويلي هو اول api بدخل ايميل مشان تجيه رسالة بكود يأدخله تاني خطوة لازم يتم تحويله مباشرة لصفحة ادخال الكود بس لتجيه الرسال بأدخله وبتم استدعاء ال api التاني للتحقق من صلاحية الكود اذا كان صلاح بيرجع الريسبونس انو صالح مشان يتم اخده على الصفحة يلي بعدها وبحال ما صالح بيطلع رسالى انة غلط بعدين اذا صالح بتم اخذه عالصفحة مع الاحتفظ بالكود ليتم ارساله في الخلفية الى ال api التالت طبعا مع حقل كلمة السر الجديدة وهيك بتم التغيير"
 		},
 		{
-			"name": "delete",
+			"name": "user",
 			"item": [
+				{
+					"name": "edit profile",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\":\"ffg\",\n    \"email\":\"example@gmail.com\",\n    \"username\":\"swswedw\",\n    \"number\":\"+963923762431\",\n    \"address\":\"syria\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/account/edit",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"account",
+								"edit"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "user profile information",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/account/profile",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"account",
+								"profile"
+							]
+						}
+					},
+					"response": []
+				},
 				{
 					"name": "delete",
 					"request": {
