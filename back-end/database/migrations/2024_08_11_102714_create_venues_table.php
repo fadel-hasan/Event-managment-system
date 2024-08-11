@@ -11,10 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->enum('status',['enable','blocked','disable']);
-            $table->string('number');
+        Schema::create('venues', function (Blueprint $table) {
+            $table->id();
+            $table->string('image');
+            $table->integer('capacity');
             $table->string('address');
+            $table->unsignedBigInteger('service_id');
+            $table->foreign('service_id')->references('id')->on('services');
+            $table->timestamps();
         });
     }
 
@@ -23,8 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn(['status','number','address']);
-        });
+        Schema::dropIfExists('venues');
     }
 };

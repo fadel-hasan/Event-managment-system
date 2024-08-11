@@ -20,5 +20,9 @@ class DatabaseSeeder extends Seeder
         //     'email' => 'test@example.com',
         // ]);
         Role::create(['name'=>'user']);
+        $this->call([
+            ServiceTypeSeeder::class,
+            FoodCategorySeeder::class
+        ]);
     }
 }

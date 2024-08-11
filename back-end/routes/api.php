@@ -5,6 +5,7 @@ use App\Http\Controllers\API\CodeCheckController;
 use App\Http\Controllers\API\ForgotPasswordController;
 use App\Http\Controllers\API\ResetPasswordController;
 use App\Http\Controllers\API\User\UserController;
+use App\Http\Controllers\ServiceController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -26,12 +27,15 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
-
+Route::get('/service/home',[ServiceController::class,'get_type_service']);
 Route::middleware('auth:sanctum')->group(function (){
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::post('account/delete',[UserController::class,'delete_account']);
     Route::get('account/profile',[UserController::class,'show']);
     Route::put('account/edit',[UserController::class,'update']);
+    Route::post('service/add',[ServiceController::class,'store']);
+    Route::post('service/detail/{id}',[ServiceController::class,'store_detail']);
+    Route::get('service/category/food',[ServiceController::class,'get_category']);
 });
 
 

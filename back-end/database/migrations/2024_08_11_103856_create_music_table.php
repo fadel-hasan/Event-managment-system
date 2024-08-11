@@ -11,10 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->enum('status',['enable','blocked','disable']);
-            $table->string('number');
-            $table->string('address');
+        Schema::create('music', function (Blueprint $table) {
+            $table->id();
+            $table->text('desc');
+            $table->unsignedBigInteger('service_id');
+            $table->foreign('service_id')->references('id')->on('services');
+            $table->timestamps();
         });
     }
 
@@ -23,8 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn(['status','number','address']);
-        });
+        Schema::dropIfExists('music');
     }
 };
