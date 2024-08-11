@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class Service extends Model
 {
@@ -26,7 +27,12 @@ class Service extends Model
         return $this->hasOne(Venue::class);
     }
 
-
+    public function favorited()
+    {
+        return (bool) Favorite::where('user_id', Auth::id())
+            ->where('service_id', $this->id)
+            ->first();
+    }
 
 
     protected $casts = [

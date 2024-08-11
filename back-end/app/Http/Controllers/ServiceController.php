@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Service;
 use App\Models\ServiceType;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
@@ -146,5 +147,53 @@ class ServiceController extends Controller
         $data = DB::table('food_category')->get();
 
         return response()->json($data);
+    }
+
+
+    public function favorite($id)
+    {
+        $service = Service::find($id);
+        if(!$service)
+        {
+           return response()->json([
+               'error'=>'there is error'
+           ],400);
+        }
+        if($service->favorited())
+        {
+            return response()->json([
+                'error'=>'this product in your favorite list you can\'t added it again'
+            ],400);
+        }
+        auth()->user()->favoriteServices()->attach($service->id);
+        return response()->json([
+            'message'=>'product is added to your favorite list'
+        ]);
+    }
+
+    public function unFavorite($id)
+    {
+        $service = Service::find($id);
+        if(!$service)
+        {
+            return response()->json([
+                'error'=>'there is error'
+            ],400);
+        }
+        Auth::user()->favoriteServices()->detach($service->id);
+
+        return response()->json([
+            'message'=>'product is removed from your favorite list'
+        ]);
+    }
+
+    public function myFavorites()
+    {
+        $service = Auth::user()->favoriteServices()->with('venue')->get();
+        
+        return response()->json([
+            'message'=>'favorite service',
+            'data'=>$service
+        ]);
     }
 }

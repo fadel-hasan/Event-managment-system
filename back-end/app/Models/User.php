@@ -28,6 +28,12 @@ class User extends Authenticatable
         'address'
     ];
 
+
+
+    public function favoriteServices()
+    {
+        return $this->belongsToMany(Service::class, 'favorites', 'user_id', 'service_id');
+    }
     /**
      * The attributes that should be hidden for serialization.
      *

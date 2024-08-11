@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\ResetCodePassword;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
 class ResetPasswordController extends Controller
@@ -49,5 +51,35 @@ class ResetPasswordController extends Controller
         $passwordReset->delete();
 
         return response(['message' =>'password has been successfully reset'], 200);
+    }
+
+    public function change_password(Request $request)
+    {
+        $validate=validator::make($request->all(), [
+            'current_password' => 'required|string',
+            'new_password' => 'required|confirmed|min:8|string'
+        ]);
+        $auth = Auth::user();
+
+        if (!Hash::check($request->get('current_password'), $auth->password))
+        {
+            return response()->json([
+                'error'=>"Current Password is Invalid"
+            ],400);
+        }
+
+        if (strcmp($request->get('current_password'), $request->new_password) == 0)
+        {
+            return response()->json([
+                'error'=>"New Password cannot be same as your current password."
+            ],400);
+        }
+
+        $user =  User::find($auth->id);
+        $user->password =  Hash::make($request->new_password);
+        $user->save();
+        return response()->json([
+           'message'=>"Password Changed Successfully"
+        ]);
     }
 }

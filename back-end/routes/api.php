@@ -36,6 +36,10 @@ Route::middleware('auth:sanctum')->group(function (){
     Route::post('service/add',[ServiceController::class,'store']);
     Route::post('service/detail/{id}',[ServiceController::class,'store_detail']);
     Route::get('service/category/food',[ServiceController::class,'get_category']);
+    Route::post('password/change',[ResetPasswordController::class,'change_password']);
+    Route::post('service/favorite/{id}',[ServiceController::class,'favorite']);
+    Route::post('service/unfavorite/{id}',[ServiceController::class,'unFavorite']);
+    Route::get('service/myfavorite',[ServiceController::class,'myFavorites']);
 });
 
 
