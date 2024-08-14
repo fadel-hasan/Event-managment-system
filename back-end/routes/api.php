@@ -4,8 +4,9 @@ use App\Http\Controllers\API\Auth\AuthController;
 use App\Http\Controllers\API\CodeCheckController;
 use App\Http\Controllers\API\ForgotPasswordController;
 use App\Http\Controllers\API\ResetPasswordController;
+use App\Http\Controllers\API\ReviewController;
+use App\Http\Controllers\API\ServiceController;
 use App\Http\Controllers\API\User\UserController;
-use App\Http\Controllers\ServiceController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -40,6 +41,11 @@ Route::middleware('auth:sanctum')->group(function (){
     Route::post('service/favorite/{id}',[ServiceController::class,'favorite']);
     Route::post('service/unfavorite/{id}',[ServiceController::class,'unFavorite']);
     Route::get('service/myfavorite',[ServiceController::class,'myFavorites']);
+    Route::get('service/category/{id}',[ServiceController::class,'service_by_type']);
+    Route::get('service/{id}',[ServiceController::class,'service_detail']);
+    Route::get('user/services',[UserController::class,'services']);
+    Route::delete('service/delete/{id}',[ServiceController::class,'delete_service']);
+    Route::post('service/addReview',[ReviewController::class,'review']);
 });
 
 

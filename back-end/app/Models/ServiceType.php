@@ -11,6 +11,11 @@ class ServiceType extends Model
 
     protected $table = 'service_type';
 
+    public function services()
+    {
+        return $this->hasMany(Service::class);
+
+    }
     protected $fillable = [
       'image',
       'name'

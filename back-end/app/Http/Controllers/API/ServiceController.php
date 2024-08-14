@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\API;
 
+use App\Http\Controllers\Controller;
 use App\Models\Service;
 use App\Models\ServiceType;
 use Illuminate\Http\Request;
@@ -33,7 +34,9 @@ class ServiceController extends Controller
                 'message'=>$validatedData->errors()
             ],422);
         }
-        $service = Service::create($request->except(['image','capacity','address']));
+        $data= $request->all();
+        $data['user_id'] = Auth::user()->id;
+        $service = Service::create($data);
         $image = $request->file('image');
         $imageName = time().'.'.$image->extension();
         $image->storeAs('public/images', $imageName);
@@ -59,7 +62,13 @@ class ServiceController extends Controller
 
     public function store_detail($id)
     {
-        $service = Service::find($id);
+        $service = Service::where('user_id',Auth::user()->id)->find($id);
+        if(!$service)
+        {
+            return response()->json([
+                'message'=>'there is wrong try again'
+            ],400);
+        }
         $validate = $this->validate_data($service->food, $service->music);
         if ($validate[0]->fails()) {
             return response()->json([
@@ -190,10 +199,50 @@ class ServiceController extends Controller
     public function myFavorites()
     {
         $service = Auth::user()->favoriteServices()->with('venue')->get();
-        
+
         return response()->json([
             'message'=>'favorite service',
             'data'=>$service
+        ]);
+    }
+
+
+    public function service_by_type($id)
+    {
+        $services = Service::whereHas('type', function ($query) use ($id) {
+            $query->where('id', $id);
+        })->whereNotIn('status',['2','0'])->with(['venue','reviews' => function ($query) {
+        $query->selectRaw('service_id, AVG(rating) as avg_rating');
+        $query->groupBy('service_id');
+        }])->get();
+
+        return response()->json([
+            'services' => $services
+        ]);
+    }
+
+    public function service_detail($id)
+    {
+//        $service=Service::with(['venue','foods'=>['foodCategory'],'music'])->find($id);
+        $service = Service::with(['venue','musics', 'foods.foodCategory','reviews' => function ($query) {
+        $query->selectRaw('service_id , AVG(rating) as avg_rating');
+        $query->groupBy('service_id');
+    }])->whereNotIn('status',['2','0'])->find($id);
+
+        return response()->json([
+            'service'=>$service
+        ]);
+
+    }
+
+
+    public function delete_service($id)
+    {
+        $service=Service::where('user_id',Auth::user()->id)->find($id);
+        $service->status = '0';
+        $service->save();
+        return response()->json([
+           'message' =>'service is deleted'
         ]);
     }
 }

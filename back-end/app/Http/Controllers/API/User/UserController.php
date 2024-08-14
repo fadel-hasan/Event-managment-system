@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API\User;
 
 use App\Http\Controllers\Controller;
+use App\Models\Service;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -80,5 +81,17 @@ class UserController extends Controller
         $user->save();
         auth()->user()->tokens()->delete();
         return response(['message'=>"تم حذف الحساب"]);
+    }
+
+    public function services()
+    {
+        $services = Service::where('user_id',Auth::user()->id)->whereNotIn('status',['0','2'])->with(['venue','reviews' => function ($query) {
+            $query->selectRaw('service_id, AVG(rating) as avg_rating');
+            $query->groupBy('service_id');
+            }])->get();
+        return response()->json([
+            'message'=>'success',
+            'data'=>$services
+        ]);
     }
 }

@@ -44,6 +44,10 @@ class User extends Authenticatable
         'remember_token',
     ];
 
+    public function services()
+    {
+        return $this->hasMany(Service::class);
+    }
     /**
      * The attributes that should be cast.
      *

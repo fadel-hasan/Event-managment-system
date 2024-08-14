@@ -20,8 +20,14 @@ class Service extends Model
         'available_day',
         'type_id',
         'status',
-        ''
+        'user_id'
     ];
+
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
     public function venue()
     {
         return $this->hasOne(Venue::class);
@@ -34,7 +40,25 @@ class Service extends Model
             ->first();
     }
 
+    public function type()
+    {
+        return $this->belongsTo(ServiceType::class);
 
+    }
+
+    public function foods()
+    {
+        return $this->hasMany(Food::class);
+    }
+
+    public function musics()
+    {
+        return $this->hasMany(Music::class);
+    }
+
+    public function reviews(){
+        return $this->hasMany(Review::class);
+    }
     protected $casts = [
         'available_day' => 'array',
     ];
