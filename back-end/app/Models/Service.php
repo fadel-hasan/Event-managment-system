@@ -46,6 +46,10 @@ class Service extends Model
 
     }
 
+    public function bookings()
+    {
+        return $this->hasMany(Booking::class);
+    }
     public function foods()
     {
         return $this->hasMany(Food::class);
@@ -58,6 +62,13 @@ class Service extends Model
 
     public function reviews(){
         return $this->hasMany(Review::class);
+    }
+
+    public function scopeByVenueAddress($query, $address)
+    {
+        return $query->whereHas('venue', function ($venueQuery) use ($address) {
+            $venueQuery->where('address', 'like', '%' . $address . '%');
+        });
     }
     protected $casts = [
         'available_day' => 'array',

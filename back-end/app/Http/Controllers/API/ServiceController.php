@@ -8,6 +8,7 @@ use App\Models\ServiceType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
 
 class ServiceController extends Controller
@@ -53,12 +54,6 @@ class ServiceController extends Controller
         return response()->json($service, 201);
     }
 
-    public function get_type_service()
-    {
-        $data = ServiceType::all();
-
-        return response()->json($data);
-    }
 
     public function store_detail($id)
     {
@@ -151,6 +146,15 @@ class ServiceController extends Controller
         }
         return;
     }
+
+
+    public function get_type_service()
+    {
+        $data = ServiceType::all();
+
+        return response()->json($data);
+    }
+
     public function get_category()
     {
         $data = DB::table('food_category')->get();
@@ -245,4 +249,128 @@ class ServiceController extends Controller
            'message' =>'service is deleted'
         ]);
     }
+
+    public function update(Request $request)
+    {
+        $service = Service::where('user_id',Auth::user()->id)->find($request->id);
+        $validatedData = validator::make($request->all(),[
+            'photograph' => 'boolean',
+            'food' => 'boolean',
+            'music' => 'boolean',
+            'price' => 'required|numeric|min:0',
+            'start_time' => 'required|date_format:H:i:s',
+            'end_time' => 'required|date_format:H:i:s',
+            'available_day' => 'required|array',
+            'available_day.*' => 'in:Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday',
+            'type_id' => 'required|exists:service_type,id',
+            'image' => 'image|mimes:jpeg,png,jpg|max:2048',
+            'capacity' => 'required|numeric|min:1',
+            'address' => 'required|string',
+        ]);
+
+        if ($validatedData->fails()){
+            return response()->json([
+                'message'=>$validatedData->errors()
+            ],422);
+        }
+        else{
+            if($request->food == $service->food && $request->music == $service->music)
+            {
+                $this->update_data($request,$service);
+            }
+            else if($request->food != $service->food && $request->food == 0)
+            {
+                $service->foods()->delete();
+                $this->update_data($request,$service);
+            }
+            else if($request->music != $service->music && $request->music==0)
+            {
+                $service->musics()->delete();
+                $this->update_data($request,$service);
+            }
+            return response()->json([
+             'message'=>'updated successfully'
+            ]);
+        }
+    }
+    public function validate_update_data($food,$music){
+        if($food && $music)
+        {
+            $validate[0] =validator::make(\request()->all(),[
+                'food' => 'required|array',
+                'food.*.category_id' => 'required|integer',
+                'food.*.image' => 'image|mimes:jpeg,png,jpg|max:2048',
+                'food.*.desc' => 'required|string',
+                'music' => 'required|string',
+            ]);
+            $validate[1] = 1;
+            return $validate;
+        }
+        else if($food && !$music)
+        {
+            $validate[0] =validator::make(\request()->all(),[
+                'food' => 'required|array',
+                'food.*.category_id' => 'required|integer',
+                'food.*.image' => 'image|mimes:jpeg,png,jpg|max:2048',
+                'food.*.desc' => 'required|string',
+            ]);
+            $validate[1] = 2;
+            return $validate;
+        }
+        else if(!$food && $music)
+        {
+            $validate[0] =validator::make(\request()->all(),[
+                'music' => 'required|string'
+            ]);
+            $validate[1] = 3;
+            return $validate;
+        }
+        else{
+            $validate[0] ='';
+            $validate[1]=4;
+            return $validate;
+        }
+        return;
+    }
+
+    public function update_data(Request $request,$service)
+    {
+        if($request->hasFile('image')) {
+            $destination = $request->image;
+            if (File::exists($destination)) {
+                File::delete($destination);
+            }
+            $file = $request->file('image');
+            $extension = $file->getClientOriginalExtension();
+            $filename = time() . '.' . $extension;
+            $file->move('storage/images/', $filename);
+        }
+        $service->update([
+            'photograph' => $request->photograph,
+            'food' => $request->food,
+            'music' => $request->music,
+            'price' => $request->price,
+            'start_time' => $request->start_time,
+            'end_time' => $request->end_time,
+            'available_day' => $request->available_day,
+            'type_id' => $request->type_id,
+        ]);
+        $service->venue()->update([
+            'image' => $filename??$service->venue->image,
+            'capacity' => $request->capacity,
+            'address' => $request->address,
+        ]);
+
+    }
+
+    public function search(Request $request)
+    {
+        $address = $request->input('address');
+        $services = Service::whereHas('venue', function ($venueQuery) use ($address) {
+            $venueQuery->where('address', 'like', '%' . $address . '%');
+        })->get();;
+
+        return response()->json($services);
+    }
+
 }

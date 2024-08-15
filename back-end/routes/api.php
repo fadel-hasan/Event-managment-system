@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\API\Auth\AuthController;
+use App\Http\Controllers\API\BookingController;
 use App\Http\Controllers\API\CodeCheckController;
 use App\Http\Controllers\API\ForgotPasswordController;
 use App\Http\Controllers\API\ResetPasswordController;
@@ -29,23 +30,36 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/service/home',[ServiceController::class,'get_type_service']);
+Route::get('service/category/{id}',[ServiceController::class,'service_by_type']);
 Route::middleware('auth:sanctum')->group(function (){
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::post('account/delete',[UserController::class,'delete_account']);
     Route::get('account/profile',[UserController::class,'show']);
     Route::put('account/edit',[UserController::class,'update']);
-    Route::post('service/add',[ServiceController::class,'store']);
-    Route::post('service/detail/{id}',[ServiceController::class,'store_detail']);
-    Route::get('service/category/food',[ServiceController::class,'get_category']);
+    Route::prefix('service')->group(function () {
+        Route::post('add',[ServiceController::class,'store']);
+        Route::post('detail/{id}',[ServiceController::class,'store_detail']);
+        Route::get('category/food',[ServiceController::class,'get_category']);
+        Route::post('favorite/{id}',[ServiceController::class,'favorite']);
+        Route::post('unfavorite/{id}',[ServiceController::class,'unFavorite']);
+        Route::get('myfavorite',[ServiceController::class,'myFavorites']);
+        Route::get('{id}',[ServiceController::class,'service_detail']);
+        Route::delete('delete/{id}',[ServiceController::class,'delete_service']);
+        Route::post('addReview',[ReviewController::class,'review']);
+        Route::post('booking',[BookingController::class,'booking']);
+        Route::post('update/{id}',[ServiceController::class,'update']);
+        Route::get('search/search', [ServiceController::class,'search']);
+    });
+
+    Route::get('payment/method',[BookingController::class,'paymentMethod']);
     Route::post('password/change',[ResetPasswordController::class,'change_password']);
-    Route::post('service/favorite/{id}',[ServiceController::class,'favorite']);
-    Route::post('service/unfavorite/{id}',[ServiceController::class,'unFavorite']);
-    Route::get('service/myfavorite',[ServiceController::class,'myFavorites']);
-    Route::get('service/category/{id}',[ServiceController::class,'service_by_type']);
-    Route::get('service/{id}',[ServiceController::class,'service_detail']);
+
     Route::get('user/services',[UserController::class,'services']);
-    Route::delete('service/delete/{id}',[ServiceController::class,'delete_service']);
-    Route::post('service/addReview',[ReviewController::class,'review']);
+    Route::get('user/booking',[BookingController::class,'booking_provider']);
+    Route::get('booking/user',[BookingController::class,'booking_user']);
+
+    Route::post('booking/accept/{id}',[BookingController::class,'accept']);
+    Route::post('booking/reject/{id}',[BookingController::class,'reject']);
 });
 
 

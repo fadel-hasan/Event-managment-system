@@ -48,6 +48,16 @@ class User extends Authenticatable
     {
         return $this->hasMany(Service::class);
     }
+
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
+
+    public function bookings()
+    {
+        return $this->hasMany(Booking::class);
+    }
     /**
      * The attributes that should be cast.
      *

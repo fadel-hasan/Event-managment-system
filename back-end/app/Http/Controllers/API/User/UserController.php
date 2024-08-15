@@ -7,6 +7,7 @@ use App\Models\Service;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
@@ -73,14 +74,36 @@ class UserController extends Controller
         ]);
     }
     public function delete_account(){
-        $user_id = auth()->user()->id;
+        try {
+            DB::beginTransaction();
 
-        $user = User::findOrFail($user_id);
+            $user = User::findOrFail(Auth::user()->id);
+            foreach ($user->bookings as $booking) {
+                $booking->payment()->delete();
+            }
+            $user->bookings()->delete();
+            $user->favoriteServices()->delete();
+            foreach ($user->services as $service) {
+                $service->reviews()->delete();
+                $service->venue()->delete();
+                $service->foods()->delete();
+                $service->musics()->delete();
+            }
+            $user->services()->delete();
 
-        $user->status = 'disable';
-        $user->save();
-        auth()->user()->tokens()->delete();
-        return response(['message'=>"تم حذف الحساب"]);
+            $user->delete();
+
+            DB::commit();
+
+            return response()->json([
+                'message' => 'User deleted successfully'
+            ], 200);
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json([
+                'message' => 'Error deleting user: ' . $e->getMessage()
+            ], 500);
+        }
     }
 
     public function services()

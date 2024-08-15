@@ -12,9 +12,18 @@ class Booking extends Model
     protected $table = 'bookings';
 
     protected $fillable = [
-      'user-id',
+      'user_id',
       'service_id',
       'bookingDate',
       'status'
     ];
+
+    public function payment()
+    {
+        return $this->hasOne(Payment::class, 'booking_id', 'id');
+    }
+
+    public function service(){
+        return $this->belongsTo(Service::class);
+    }
 }
